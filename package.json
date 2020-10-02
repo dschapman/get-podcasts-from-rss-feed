@@ -1,0 +1,13 @@
+{
+  "name": "get-podcasts-from-rss-feed",
+  "version": "1.0.0",
+  "description": "Gets all the files from RSS feeds",
+  "main": "index.js",
+  "author": "dschapman",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "prompt-sync": "^4.2.0",
+    "rss-parser": "^3.9.0"
+  }
+}
