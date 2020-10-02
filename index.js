@@ -1,12 +1,8 @@
 const Parser = require("rss-parser");
 const axios = require("axios").default;
-const fileDownload = require("js-file-download");
 const fs = require("fs");
 const prompt = require("prompt-sync")({ sigint: true });
 const slugify = require("slugify");
-const async = require("async");
-
-function download(url, filename) {}
 
 let rssParser = new Parser();
 if (!fs.existsSync("./output")) {
@@ -40,7 +36,6 @@ console.log(`You entered ${rssUrl}`);
     await axios
       .get(url, {
         responseType: "stream",
-        timeout: 100000,
       })
       .then((res) => {
         res.data.pipe(fs.createWriteStream(filename));
