@@ -1,12 +1,16 @@
+import styled from "@emotion/styled";
 import Form from "../src/form";
+
+const Container = styled.div`
+  display: block;
+  text-align: center;
+`;
 
 function HomePage() {
   return (
-    <div>
-      <h1>This is my Website</h1>
-
+    <Container>
       <Form />
-    </div>
+    </Container>
   );
 }
 
