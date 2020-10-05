@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import downloadPodcast from "./download-podcast";
 import Parser from "rss-parser";
+import Page from "./loading";
 
 const colors = {
   prussianblue: "#0b3954",
@@ -78,22 +79,26 @@ const FeedPreview = styled.div`
 function Form() {
   const [rssUrl, setRssUrl] = React.useState("");
   const [feed, setFeed] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
   function handleChange(event) {
     setRssUrl(event.target.value);
   }
 
   async function handleUrlSubmit(event) {
+    setLoading(true);
     // Note: some RSS feeds can't be loaded in the browser due to CORS security.
     // To get around this, you can use a proxy.
     const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
     event.preventDefault();
     const MyParser = new Parser();
     setFeed(null);
+
     await MyParser.parseURL(CORS_PROXY + rssUrl, function (err, feed) {
       if (err) throw err;
+
       setFeed(feed);
+      setLoading(false);
     });
-    console.log(feed);
   }
 
   function handleDownload(event) {
@@ -145,6 +150,7 @@ function Form() {
       <button htmlFor="url" onClick={handleUrlSubmit}>
         Submit
       </button>
+      <Page loading={loading} />
       <Feed />
     </MyForm>
   );
