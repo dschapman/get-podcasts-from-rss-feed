@@ -12,7 +12,7 @@ const colors = {
 
 const MyForm = styled.form`
   color: ${colors.prussianblue};
-  font-family: "helvetica neue";
+
   margin-top: 20px;
   display: inline-block;
   background: gainsboro;
