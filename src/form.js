@@ -76,9 +76,22 @@ const FeedPreview = styled.div`
   }
 `;
 
+function ErrorMessage({ error }) {
+  const Message = styled.span`
+    color: ${colors.lava};
+  `;
+  if (error) {
+    console.log(error);
+    return <Message>{error}</Message>;
+  } else {
+    return <></>;
+  }
+}
+
 function Form() {
   const [rssUrl, setRssUrl] = React.useState("");
   const [feed, setFeed] = React.useState(null);
+  const [error, setError] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   function handleChange(event) {
     setRssUrl(event.target.value);
@@ -93,12 +106,14 @@ function Form() {
     const MyParser = new Parser();
     setFeed(null);
 
-    await MyParser.parseURL(CORS_PROXY + rssUrl, function (err, feed) {
-      if (err) throw err;
-
+    await MyParser.parseURL(CORS_PROXY + rssUrl).then((feed) => {
       setFeed(feed);
       setLoading(false);
-    });
+    }),
+      (error) => {
+        setError(error);
+        console.log(error);
+      };
   }
 
   function handleDownload(event) {
@@ -147,9 +162,11 @@ function Form() {
         onChange={handleChange}
         value={rssUrl}
       />
+
       <button htmlFor="url" onClick={handleUrlSubmit}>
         Submit
       </button>
+      <ErrorMessage error={error} />
       <Page loading={loading} />
       <Feed />
     </MyForm>
