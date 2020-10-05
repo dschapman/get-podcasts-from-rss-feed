@@ -101,6 +101,13 @@ function Form() {
     if (feed) {
       return (
         <FeedPreview>
+          <span>
+            <em>
+              This form will download podcasts from many sites, but right now is
+              lacking a ui, and may get blocked by CORS policy. If you run into
+              problems check back later.
+            </em>
+          </span>
           <h3>{feed.title}</h3>
           <p id="description">{feed.description}</p>
           <button onClick={handleDownload}>Download</button>
