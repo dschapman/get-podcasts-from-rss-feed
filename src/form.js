@@ -37,6 +37,17 @@ const MyForm = styled.form`
   }
 `;
 
+const FeedPreview = styled.div`
+  text-align: left;
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li {
+  }
+`;
+
 function Form() {
   const [rssUrl, setRssUrl] = React.useState("");
   const [feed, setFeed] = React.useState(null);
@@ -61,19 +72,19 @@ function Form() {
   function Feed() {
     if (feed) {
       return (
-        <div>
+        <FeedPreview>
           <h3>{feed.title}</h3>
           <p>{feed.description}</p>
           <ul>
             {feed.items.map((item) => {
               return (
                 <li>
-                  {item.title} - {item.itunes.summary}
+                  <strong>{item.title}</strong> - {item.itunes.summary}
                 </li>
               );
             })}
           </ul>
-        </div>
+        </FeedPreview>
       );
     } else {
       return <></>;
