@@ -32,7 +32,7 @@ const MyForm = styled.form`
     background: white;
     :focus {
       outline: none;
-      background-color: hsl(194.7, 53.3%, 90%);
+      background-color: aliceblue;
       border-color: black;
     }
   }
@@ -69,8 +69,9 @@ const FeedPreview = styled.div`
     color: ${colors.sizzlingred};
     text-align: center;
   }
-  #message {
+  .message {
     color: ${colors.lava};
+    font-size: 0.75rem;
   }
 `;
 
@@ -104,15 +105,18 @@ function Form() {
     if (feed) {
       return (
         <FeedPreview>
-          <span id="message">
+          <span className="message">
             <em>
-              This form will download podcasts from many sites, but right now is
-              lacking a ui, and sometimes might just not work.
+              This form is lacking a download ui, and sometimes might just not
+              work. Check the console.
             </em>
           </span>
           <h3>{feed.title}</h3>
           <p id="description">{feed.description}</p>
           <button onClick={handleDownload}>Download</button>
+          <div className="message">
+            Warning this will download all {feed.items.length} episodes.
+          </div>
         </FeedPreview>
       );
     } else {
