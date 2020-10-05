@@ -1,8 +1,17 @@
 import styled from "@emotion/styled";
+import downloadPodcast from "./download-podcast";
 import Parser from "rss-parser";
-import FetchPodcast from "./fetch-podcast";
+
+const colors = {
+  prussianblue: "#0b3954",
+  metallicseaweed: "#087E8B",
+  lightblue: "#ADD8E6",
+  sizzlingred: "#FF5a5F",
+  lava: "#c81D25",
+};
 
 const MyForm = styled.form`
+  color: ${colors.prussianblue};
   font-family: "helvetica neue";
   margin-top: 20px;
   display: inline-block;
@@ -12,20 +21,22 @@ const MyForm = styled.form`
   max-width: 450px;
   padding: 20px;
   text-align: center;
-  input {
+  input,
+  button {
     width: 100%;
     margin: 10px 0;
     padding: 10px;
     border-radius: 10px;
     border: 0; // remove default border
-    border-bottom: 3px solid lightblue; // add only bottom border
+    border-bottom: 3px solid ${colors.lightblue}; // add only bottom border
+    background: white;
     :focus {
       outline: none;
       background-color: hsl(194.7, 53.3%, 90%);
       border-color: black;
     }
   }
-  input[type="submit"] {
+  button {
     width: 30%;
   }
   label {
@@ -38,13 +49,25 @@ const MyForm = styled.form`
 `;
 
 const FeedPreview = styled.div`
-  text-align: left;
+  border: solid ${colors.lightblue} 4px;
+  padding: 10px;
+  border-radius: 10px;
+  background: aliceblue;
   ul {
     list-style: none;
     margin: 0;
     padding: 0;
   }
-  li {
+  button {
+    text-align: center;
+  }
+  #description {
+    font-size: 14px;
+    text-align: left;
+  }
+  h3 {
+    color: ${colors.sizzlingred};
+    text-align: center;
   }
 `;
 
@@ -69,21 +92,18 @@ function Form() {
     console.log(feed);
   }
 
+  function handleDownload(event) {
+    event.preventDefault();
+    downloadPodcast({ feed });
+  }
+
   function Feed() {
     if (feed) {
       return (
         <FeedPreview>
           <h3>{feed.title}</h3>
-          <p>{feed.description}</p>
-          <ul>
-            {feed.items.map((item) => {
-              return (
-                <li>
-                  <strong>{item.title}</strong> - {item.itunes.summary}
-                </li>
-              );
-            })}
-          </ul>
+          <p id="description">{feed.description}</p>
+          <button onClick={handleDownload}>Download</button>
         </FeedPreview>
       );
     } else {
