@@ -69,6 +69,9 @@ const FeedPreview = styled.div`
     color: ${colors.sizzlingred};
     text-align: center;
   }
+  #message {
+    color: ${colors.lava};
+  }
 `;
 
 function Form() {
@@ -101,11 +104,10 @@ function Form() {
     if (feed) {
       return (
         <FeedPreview>
-          <span>
+          <span id="message">
             <em>
               This form will download podcasts from many sites, but right now is
-              lacking a ui, and may get blocked by CORS policy. If you run into
-              problems check back later.
+              lacking a ui, and sometimes might just not work.
             </em>
           </span>
           <h3>{feed.title}</h3>
