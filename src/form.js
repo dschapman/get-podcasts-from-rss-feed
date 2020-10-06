@@ -2,7 +2,6 @@ import styled from "@emotion/styled";
 import downloadPodcast from "./download-podcast";
 import Parser from "rss-parser";
 import Page from "./loading";
-import slugify from "slugify";
 
 const colors = {
   prussianblue: "#0b3954",
@@ -119,36 +118,32 @@ function Form() {
       fetchData();
     }
     if (status === "downloading") {
-      const { items } = feed;
-
-      for (const item of items) {
-        const { title, pubDate } = item;
-        const date = new Date(pubDate);
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        const year = date.getFullYear();
-        const url = CORS_PROXY + item.enclosure.url.replace(/\?.*$/g, "");
-        const filename = `${year}-${month}-${day}-${slugify(title, {
-          lower: true,
-          strict: true,
-        })}.mp3`;
-        downloadPodcast({ url, filename });
+      setStatus("downloading");
+      async function fetchData() {
+        await downloadPodcast({ feed, downloads, setDownloads, CORS_PROXY });
       }
+      fetchData();
     }
   }, [status, feed]);
 
   function Feed() {
     function DownloadStatus() {
+      const [progress, setProgress] = React.useState({});
+      React.useEffect(() => {
+        setProgress({ downloads: downloads, length: feed.items.length });
+      }, [downloads, feed]);
       if (status === "") {
         return (
           <div className="message">
-            Warning this will download all {feed.items.length} episodes.
+            Warning this will download all {progress.length} episodes.
           </div>
         );
       } else if (status === "downloading") {
         return (
           <div>
-            <div>Currently Downloading</div>
+            <div>
+              Currently Downloading {progress.downloads}/{progress.length}
+            </div>
             <Page isLoading={true} />
           </div>
         );
@@ -182,6 +177,7 @@ function Form() {
   return (
     <MyForm>
       <h2>Podcast Fetcher</h2>
+      <h3>THIS IS IN PROGRESS 🐞 ABOUND! PROCEED AT YOUR OWN RISK ⚠️</h3>
       <p>
         Sometimes podcast apps are just inconvenient. You thought you downloaded
         the latest episode, but you go to look for it later and its gone. This
