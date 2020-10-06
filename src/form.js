@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import downloadPodcast from "./download-podcast";
 import Parser from "rss-parser";
 import Page from "./loading";
+import slugify from "slugify";
 
 const colors = {
   prussianblue: "#0b3954",
@@ -92,51 +93,85 @@ function Form() {
   const [rssUrl, setRssUrl] = React.useState("");
   const [feed, setFeed] = React.useState(null);
   const [error, setError] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
+  const [status, setStatus] = React.useState("");
+  const [downloads, setDownloads] = React.useState(0);
+
   function handleChange(event) {
     setRssUrl(event.target.value);
   }
 
-  async function handleUrlSubmit(event) {
-    setLoading(true);
-    // Note: some RSS feeds can't be loaded in the browser due to CORS security.
-    // To get around this, you can use a proxy.
+  React.useEffect(() => {
     const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
-    event.preventDefault();
-    const MyParser = new Parser();
-    setFeed(null);
+    if (status === "loading") {
+      const MyParser = new Parser();
+      setFeed(null);
+      async function fetchData() {
+        await MyParser.parseURL(CORS_PROXY + rssUrl).then((feed) => {
+          console.log(feed);
+          setFeed(feed);
+          setStatus("");
+        }),
+          (error) => {
+            setError(error);
+            console.log(error);
+          };
+      }
+      fetchData();
+    }
+    if (status === "downloading") {
+      const { items } = feed;
 
-    await MyParser.parseURL(CORS_PROXY + rssUrl).then((feed) => {
-      setFeed(feed);
-      setLoading(false);
-    }),
-      (error) => {
-        setError(error);
-        console.log(error);
-      };
-  }
-
-  function handleDownload(event) {
-    event.preventDefault();
-    downloadPodcast({ feed });
-  }
+      for (const item of items) {
+        const { title, pubDate } = item;
+        const date = new Date(pubDate);
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const year = date.getFullYear();
+        const url = CORS_PROXY + item.enclosure.url.replace(/\?.*$/g, "");
+        const filename = `${year}-${month}-${day}-${slugify(title, {
+          lower: true,
+          strict: true,
+        })}.mp3`;
+        downloadPodcast({ url, filename });
+      }
+    }
+  }, [status, feed]);
 
   function Feed() {
-    if (feed) {
-      return (
-        <FeedPreview>
-          <span className="message">
-            <em>
-              This form is lacking a download ui, and sometimes might just not
-              work. Check the console.
-            </em>
-          </span>
-          <h3>{feed.title}</h3>
-          <p id="description">{feed.description}</p>
-          <button onClick={handleDownload}>Download</button>
+    function DownloadStatus() {
+      if (status === "") {
+        return (
           <div className="message">
             Warning this will download all {feed.items.length} episodes.
           </div>
+        );
+      } else if (status === "downloading") {
+        return (
+          <div>
+            <div>Currently Downloading</div>
+            <Page isLoading={true} />
+          </div>
+        );
+      } else {
+        return <></>;
+      }
+    }
+
+    if (feed) {
+      return (
+        <FeedPreview>
+          <h3>{feed.title}</h3>
+          <p id="description">{feed.description}</p>
+          <button
+            onClick={(event) => {
+              event.preventDefault();
+              setDownloads(0);
+              setStatus("downloading");
+            }}
+          >
+            Download
+          </button>
+          <DownloadStatus />
         </FeedPreview>
       );
     } else {
@@ -163,11 +198,16 @@ function Form() {
         value={rssUrl}
       />
 
-      <button htmlFor="url" onClick={handleUrlSubmit}>
+      <button
+        onClick={(event) => {
+          event.preventDefault();
+          setStatus("loading");
+        }}
+      >
         Submit
       </button>
       <ErrorMessage error={error} />
-      <Page loading={loading} />
+      <Page isloading={status === "loading"} />
       <Feed />
     </MyForm>
   );

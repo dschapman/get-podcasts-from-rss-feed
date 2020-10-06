@@ -48,8 +48,8 @@ const Container = styled.div`
   }
 `;
 
-function Page({ loading }) {
-  if (loading) {
+function Page({ isLoading }) {
+  if (isLoading) {
     return (
       <Container>
         <div className="line a"></div>
