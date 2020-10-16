@@ -2,7 +2,20 @@ import axios from "axios";
 import slugify from "slugify";
 import fileDownload from "js-file-download";
 
-async function downloadPodcast({ feed, downloads, setDownloads, CORS_PROXY }) {
+/**
+ * Downloads each podcast in an rss feed.
+ *
+ * @param {object} feed A podcast rss feed item returned from rss-parser
+ * @param {number} downloads A number in state
+ * @param {function} setDownloads The function to set the number in state
+ * @param {string} CORS_PROXY A proxy to avoid CORS errors. Defaults to https://cors-anywhere.herokuapp.com/
+ */
+async function downloadPodcast({
+  feed,
+  downloads,
+  setDownloads,
+  CORS_PROXY = "https://cors-anywhere.herokuapp.com/",
+}) {
   const { items } = feed;
 
   for (const item of items) {
