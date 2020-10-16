@@ -46,6 +46,7 @@ const MyForm = styled.form`
   h2 {
     text-align: center;
     margin-top: 0;
+    color: ${colors.metallicseaweed}
   }
 `;
 
@@ -121,6 +122,7 @@ function Form() {
       setStatus("downloading");
       async function fetchData() {
         await downloadPodcast({ feed, downloads, setDownloads, CORS_PROXY });
+        setStatus("")
       }
       fetchData();
     }
@@ -157,7 +159,7 @@ function Form() {
         <FeedPreview>
           <h3>{feed.title}</h3>
           <p id="description">{feed.description}</p>
-          <button
+          <button disabled={status=="downloading"}
             onClick={(event) => {
               event.preventDefault();
               setDownloads(0);
@@ -177,7 +179,8 @@ function Form() {
   return (
     <MyForm>
       <h2>Podcast Fetcher</h2>
-      <h3>THIS IS IN PROGRESS 🐞 ABOUND! PROCEED AT YOUR OWN RISK ⚠️</h3>
+      <h3>THIS IS IN PROGRESS</h3> 
+      <p>🐞s ABOUND! PROCEED AT YOUR OWN RISK ⚠️</p>
       <p>
         Sometimes podcast apps are just inconvenient. You thought you downloaded
         the latest episode, but you go to look for it later and its gone. This
