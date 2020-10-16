@@ -93,7 +93,7 @@ function Form() {
   const [rssUrl, setRssUrl] = React.useState("");
   const [feed, setFeed] = React.useState(null);
   const [error, setError] = React.useState(null);
-  const [status, setStatus] = React.useState("");
+  const [status, setStatus] = React.useState("idle");
   const [downloads, setDownloads] = React.useState(0);
 
   function handleChange(event) {
@@ -101,6 +101,7 @@ function Form() {
   }
 
   React.useEffect(() => {
+    //I was getting CORS errors. Redirecting through this site solved most of those.
     const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
     if (status === "loading") {
       const MyParser = new Parser();
@@ -109,7 +110,7 @@ function Form() {
         await MyParser.parseURL(CORS_PROXY + rssUrl).then((feed) => {
           console.log(feed);
           setFeed(feed);
-          setStatus("");
+          setStatus("idle");
         }),
           (error) => {
             setError(error);
@@ -122,7 +123,7 @@ function Form() {
       setStatus("downloading");
       async function fetchData() {
         await downloadPodcast({ feed, downloads, setDownloads, CORS_PROXY });
-        setStatus("");
+        setStatus("idle");
       }
       fetchData();
     }
@@ -130,7 +131,7 @@ function Form() {
 
   function Feed() {
     function DownloadStatus() {
-      if (status === "") {
+      if (status === "idle") {
         return (
           <div className="message">
             Warning this will download all {feed.items.length} episodes.
