@@ -48,6 +48,7 @@ const Container = styled.div`
   }
 `;
 
+/** A simple CSS loading animation */
 function Page({ isLoading }) {
   if (isLoading) {
     return (
