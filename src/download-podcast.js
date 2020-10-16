@@ -21,11 +21,13 @@ async function downloadPodcast({ feed, downloads, setDownloads, CORS_PROXY }) {
       .then((res) => {
         fileDownload(res.data, filename);
         setDownloads(downloads + 1);
+        console.log(
+          `${filename}" downloaded! ${downloads}/${feed.items.length}`
+        );
       })
       .catch((error) => {
         console.log(error);
       });
-    console.log(`${filename}" downloaded!`);
   }
 }
 export default downloadPodcast;

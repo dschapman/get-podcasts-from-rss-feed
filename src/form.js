@@ -19,7 +19,7 @@ const MyForm = styled.form`
   background: gainsboro;
   border-radius: 10px;
   min-width: 300px;
-  max-width: 450px;
+  max-width: 400px;
   padding: 20px;
   text-align: center;
   input,
@@ -46,7 +46,7 @@ const MyForm = styled.form`
   h2 {
     text-align: center;
     margin-top: 0;
-    color: ${colors.metallicseaweed}
+    color: ${colors.metallicseaweed};
   }
 `;
 
@@ -122,7 +122,7 @@ function Form() {
       setStatus("downloading");
       async function fetchData() {
         await downloadPodcast({ feed, downloads, setDownloads, CORS_PROXY });
-        setStatus("")
+        setStatus("");
       }
       fetchData();
     }
@@ -130,22 +130,15 @@ function Form() {
 
   function Feed() {
     function DownloadStatus() {
-      const [progress, setProgress] = React.useState({});
-      React.useEffect(() => {
-        setProgress({ downloads: downloads, length: feed.items.length });
-      }, [downloads, feed]);
       if (status === "") {
         return (
           <div className="message">
-            Warning this will download all {progress.length} episodes.
+            Warning this will download all {feed.items.length} episodes.
           </div>
         );
       } else if (status === "downloading") {
         return (
           <div>
-            <div>
-              Currently Downloading {progress.downloads}/{progress.length}
-            </div>
             <Page isLoading={true} />
           </div>
         );
@@ -159,7 +152,8 @@ function Form() {
         <FeedPreview>
           <h3>{feed.title}</h3>
           <p id="description">{feed.description}</p>
-          <button disabled={status=="downloading"}
+          <button
+            disabled={status == "downloading"}
             onClick={(event) => {
               event.preventDefault();
               setDownloads(0);
@@ -179,12 +173,10 @@ function Form() {
   return (
     <MyForm>
       <h2>Podcast Fetcher</h2>
-      <h3>THIS IS IN PROGRESS</h3> 
+      <h3>THIS IS IN PROGRESS</h3>
       <p>🐞s ABOUND! PROCEED AT YOUR OWN RISK ⚠️</p>
       <p>
-        Sometimes podcast apps are just inconvenient. You thought you downloaded
-        the latest episode, but you go to look for it later and its gone. This
-        website let's you download the mp3 files for your favorite podcast.
+        This website let's you download the mp3 files for your favorite podcast.
       </p>
       <label htmlFor="url">
         Enter the url for the podcast RSS feed that you would like to download.
@@ -202,6 +194,7 @@ function Form() {
           event.preventDefault();
           setStatus("loading");
         }}
+        disabled={status == "loading"}
       >
         Submit
       </button>
